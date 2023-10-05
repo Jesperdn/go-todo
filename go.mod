@@ -1,6 +1,6 @@
 module github.com/jesper.norgard/Todo_go
 
-go 1.21.1
+go 1.18
 
 require (
 	github.com/DATA-DOG/go-sqlmock v1.5.0 // indirect

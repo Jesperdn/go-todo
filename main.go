@@ -13,7 +13,7 @@ import (
 func main() {
 	Db := database.SetupDb()
 	router := setupRouter(Db)
-	router.Run("localhost:8080")
+	router.Run()
 }
 
 func setupRouter(db *sql.DB) *gin.Engine {

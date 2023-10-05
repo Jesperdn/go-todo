@@ -5,23 +5,47 @@ import (
 	"fmt"
 	"github.com/jesper.norgard/Todo_go/model"
 	_ "github.com/lib/pq"
+	"os"
+	"strconv"
 )
 
 const (
-	host   = "localhost"
-	port   = 5432
-	user   = "jesper.norgard"
-	dbname = "go_test_db"
+	PGHOST      = "PGHOST"
+	PGPORT      = "PGPORT"
+	PGUSER      = "PGUSER"
+	PGDATABASE  = "PGDATABASE"
+	PGPASSWORD  = "PGPASSWORD"
+	defaultHost = "localhost"
+	defaultPort = 5432
+	defaultUser = "jesper.norgard"
+	defaultDB   = "go_test_db"
+	defaultPW   = "."
 )
 
 func SetupDb() *sql.DB {
-	psqlconn := fmt.Sprintf("host=%s port=%d user=%s dbname=%s sslmode=disable", host, port, user, dbname)
-	db, err := sql.Open("postgres", psqlconn)
+
+	host := getEnv(PGHOST, defaultHost)
+	port := getEnvAsInt(PGPORT, defaultPort)
+	user := getEnv(PGUSER, defaultUser)
+	dbname := getEnv(PGDATABASE, defaultDB)
+	password := getEnv(PGPASSWORD, defaultPW)
+
+	dsn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
+	fmt.Println(dsn)
+	db, err := sql.Open("postgres", dsn)
 	if err != nil {
 		panic(err)
 	}
 
+	createTables(db)
 	return db
+}
+
+func createTables(db *sql.DB) {
+	_, err := db.Exec("CREATE TABLE IF NOT EXISTS tasks (id SERIAL PRIMARY KEY , name TEXT NOT NULL ,completed BOOLEAN\n)")
+	if err != nil {
+		panic(err)
+	}
 }
 
 func GetTasks(db *sql.DB) ([]model.Task, error) {
@@ -60,4 +84,20 @@ func ToggleCompleteById(db *sql.DB, id int) (sql.Result, error) {
 	}
 
 	return res, nil
+}
+
+func getEnv(key string, defaultValue string) string {
+	value := os.Getenv(key)
+	if value == "" {
+		return defaultValue
+	}
+	return value
+}
+
+func getEnvAsInt(key string, defaultValue int) int {
+	valueStr := os.Getenv(key)
+	if value, err := strconv.Atoi(valueStr); err == nil {
+		return value
+	}
+	return defaultValue
 }
