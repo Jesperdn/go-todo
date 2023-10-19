@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/jesper.norgard/Todo_go/database"
+	"github.com/jesper.norgard/Todo_go/test"
 	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
@@ -10,17 +11,21 @@ import (
 )
 
 func TestGetTasksRoute(t *testing.T) {
-	router := setupRouter()
+	todoRepository := test.NewMockTodoRepository()
+	router := SetupRouter(todoRepository)
 
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/tasks", nil)
 	router.ServeHTTP(w, req)
 
+	// todo add expected testing
+
 	assert.Equal(t, http.StatusOK, w.Code)
 }
 
 func TestToggleCompleteByIdRoute(t *testing.T) {
-	router := setupRouter()
+	todoRepository := test.NewMockTodoRepository()
+	router := SetupRouter(todoRepository)
 
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("PUT", "/tasks", nil)
