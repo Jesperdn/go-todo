@@ -68,24 +68,6 @@ func GetTasks(db *sql.DB) ([]model.Task, error) {
 	return tasks, nil
 }
 
-func PostTask(db *sql.DB, task *model.Task) (sql.Result, error) {
-	res, err := db.Exec("INSERT INTO tasks (name, completed) VALUES ($1, $2)", task.Name, task.Completed)
-	if err != nil {
-		return nil, err
-	}
-
-	return res, nil
-}
-
-func ToggleCompleteById(db *sql.DB, id int) (sql.Result, error) {
-	res, err := db.Exec("UPDATE tasks SET completed = NOT completed WHERE id = $1", id)
-	if err != nil {
-		return nil, err
-	}
-
-	return res, nil
-}
-
 func getEnv(key string, defaultValue string) string {
 	value := os.Getenv(key)
 	if value == "" {

@@ -18,9 +18,11 @@ func TestGetTasksRoute(t *testing.T) {
 	req, _ := http.NewRequest("GET", "/tasks", nil)
 	router.ServeHTTP(w, req)
 
-	// todo add expected testing
-
 	assert.Equal(t, http.StatusOK, w.Code)
+	expected := `[{"id":0,"name":"One","completed":false},{"id":0,"name":"Two","completed":false}]`
+	if w.Body.String() != expected {
+		t.Errorf("Expected %v | Actual: %v", expected, w.Body.String())
+	}
 }
 
 func TestToggleCompleteByIdRoute(t *testing.T) {

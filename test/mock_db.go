@@ -13,7 +13,6 @@ func NewMockTodoRepository() *MockTodoRepository {
 		tasks: []model.Task{
 			{Name: "One", Completed: false},
 			{Name: "Two", Completed: false},
-			{Name: "Three", Completed: false},
 		},
 	}
 }
