@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jesper.norgard/Todo_go/biz/todo"
 	"github.com/jesper.norgard/Todo_go/database"
+	"github.com/jesper.norgard/Todo_go/rest/middleware"
 	todoController "github.com/jesper.norgard/Todo_go/rest/todo"
 	_ "github.com/lib/pq"
 	"net/http"
@@ -21,6 +22,7 @@ func main() {
 
 func SetupRouter(taskRepository todo.TaskRepositoryContract) *gin.Engine {
 	r := gin.Default()
+	r.Use(middleware.CORSMiddleware())
 
 	r.GET("/ping", func(c *gin.Context) {
 		c.String(http.StatusOK, "pong")
